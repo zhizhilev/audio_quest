@@ -30,13 +30,20 @@ dependencies:
   speech_to_text: ^3.1.0
   just_audio: ^0.7.1
   rxdart: ^0.26.0
-#  dio: ^3.0.9
+  dio: ^3.0.10
+
+  mobx: ^1.2.1+4
+  flutter_mobx: ^1.1.0+2
 #  path_provider: ^1.6.8
 #  archive: ^2.0.13
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  #mobx_codegen: ^1.1.1+1
+  build_runner: ^1.11.5
+  mobx_codegen: ^1.1.2
+  #build_runner: ^1.12.2
 
 dependency_overrides:
   plugin_platform_interface: ^2.0.0
