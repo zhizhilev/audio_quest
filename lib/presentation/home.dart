@@ -81,44 +81,7 @@ class _HomeState extends State<Home> {
                 }),
 
 
-            Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: Text(
-                 "Готовность распознавалки " + (_homeState.isRecognizerReady ? "Готово" : "не готово"),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-            Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: Text(
-                  "Статус распознавалки " + _homeState.recognizerStatus,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-
-            Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: Text(
-                  "Ошибка распознавалки " + _homeState.recognizerError,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-
-            Container(
-              color: Theme.of(context).selectedRowColor,
-              child: Center(
-                child: Text(
-                  "Результат распознавалки " + _homeState.recognizerResult,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+            _getRecognizerInfo(),
 
             StreamBuilder<Duration>(
               stream: _player.durationStream,
@@ -168,6 +131,58 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+
+
+  Widget _getRecognizerInfo() {
+    return Observer(
+      builder: (_) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Готовность распознавалки " + (_homeState.isRecognizerReady ? "Готово" : "не готово"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Статус распознавалки " + _homeState.recognizerStatus,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Ошибка распознавалки " + _homeState.recognizerError,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Результат распознавалки " + _homeState.recognizerResult,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 
