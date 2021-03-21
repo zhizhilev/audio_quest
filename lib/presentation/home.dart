@@ -1,14 +1,5 @@
 import 'package:audio_quest/domain/model/audio_sample.dart';
-import 'package:audio_quest/domain/repository/audio_sample_repository.dart';
 import 'package:flutter/material.dart';
-
-import 'dart:async';
-import 'dart:math';
-
-import 'package:speech_to_text/speech_recognition_error.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
-
 
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
@@ -23,98 +14,21 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool _hasSpeech = false;
-  double level = 0.0;
-  double minSoundLevel = 50000;
-  double maxSoundLevel = -50000;
-  String lastWords = '';
-  String lastError = '';
-  String lastStatus = '';
-  String _currentLocaleId = '';
-  int resultListened = 0;
-  List<LocaleName> _localeNames = [];
-  final SpeechToText speech = SpeechToText();
-
   HomeState _homeState;
 
   AudioPlayer _player = null;
   AudioSample _sampleTree = null;
-  // AudioSampleItem _sampleTree =
-  // AudioSampleItem(
-  //     "https://audio.cursor72.ru/media/test/one.mp3",
-  //     AudioSampleItem(
-  //       "https://audio.cursor72.ru/media/test/one_yes.mp3",
-  //       AudioSampleItem(
-  //           "https://audio.cursor72.ru/media/test/two_yes.mp3",
-  //           null,
-  //           null,
-  //           null
-  //       ),
-  //       AudioSampleItem(
-  //           "https://audio.cursor72.ru/media/test/two_no.mp3",
-  //           null,
-  //           null,
-  //           null
-  //       ),
-  //       AudioSampleItem(
-  //           "https://audio.cursor72.ru/media/test/two_no.mp3",
-  //           null,
-  //           null,
-  //           null
-  //       ),
-  //     ),
-  //     AudioSampleItem(
-  //         "https://audio.cursor72.ru/media/test/one_no.mp3",
-  //         null,
-  //         null,
-  //         null
-  //     ),
-  //     AudioSampleItem(
-  //         "https://audio.cursor72.ru/media/test/one_stop.mp3",
-  //         null,
-  //         null,
-  //         null
-  //     )
-  // );
+
   void _getAudioSample() async {
     // здесь получаем данные
-    // _sampleTree =
-
     await _homeState.getAudioSample(api_key: '');
-    //
-    //final AudioSampleRepository _audioSampleRepository = _homeState.audioSampleRepository;
     print("hyryureyu");
-    //print(_homeState.audioSampletoString());
-    // print(_audioSampleRepository.toString());
-    //_sampleTree = await _audioSampleRepository.getAudioSampleTree(api_key: ''); // TODO: сделал напрямую, переделать на обсервер
     _sampleTree = _homeState.audioSample;
 
-
     var duration = _player.setUrl(_sampleTree.url);
-    print("qweqwe");
     print("qweqwe " + duration.toString());
-    initSpeechState();
+    // initSpeechState();
   }
-
-
-  Future<void> initSpeechState() async {
-    print("234324234");
-    var hasSpeech = await speech.initialize(
-        onError: errorListener, onStatus: statusListener, debugLogging: true);
-    if (hasSpeech) {
-      _localeNames = await speech.locales();
-
-      var systemLocale = await speech.systemLocale();
-      _currentLocaleId = systemLocale.localeId;
-    }
-    print("qweqwerewr3");
-    if (!mounted) return;
-
-    setState(() {
-      _hasSpeech = hasSpeech;
-    });
-  }
-
 
 
   @override
@@ -128,8 +42,6 @@ class _HomeState extends State<Home> {
 
 
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,18 +51,16 @@ class _HomeState extends State<Home> {
       body: Center(
         child: Column(
           children: [
-            // ElevatedButton(
-            //     child: Text("Инициализация распознавалки"),
-            //     onPressed: () {
-            //       //_hasSpeech ? null : initSpeechState;
-            //     }),
-            // ElevatedButton(
-            //     child: Text("Начать распознавание"),
-            //     onPressed: () {
-            //       if (_hasSpeech && !speech.isListening) {
-            //         startListening();
-            //       }
-            //     }),
+            ElevatedButton(
+                child: Text("Инициализация распознавалки"),
+                onPressed: () {
+                  _homeState.initRecognizer();
+                }),
+            ElevatedButton(
+                child: Text("Начать распознавание"),
+                onPressed: () {
+                  _homeState.startRecognizerListening();
+                }),
             ElevatedButton(
                 child: Text("Воспроизвести звук"),
                 onPressed: () {
@@ -175,7 +85,36 @@ class _HomeState extends State<Home> {
               color: Theme.of(context).selectedRowColor,
               child: Center(
                 child: Text(
-                  lastWords,
+                 "Готовность распознавалки " + (_homeState.isRecognizerReady ? "Готово" : "не готово"),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Статус распознавалки " + _homeState.recognizerStatus,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Ошибка распознавалки " + _homeState.recognizerError,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+
+            Container(
+              color: Theme.of(context).selectedRowColor,
+              child: Center(
+                child: Text(
+                  "Результат распознавалки " + _homeState.recognizerResult,
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -203,9 +142,11 @@ class _HomeState extends State<Home> {
                       bufferedPosition = duration;
                     }
                     if (position.inSeconds > duration.inSeconds - 10) {
-                      if (_hasSpeech && !speech.isListening) {
-                        startListening();
-                      }
+                      //TODO: начало распознавания
+                      print("Начало распознавания текста (нужно запустить)");
+                      // if (_hasSpeech && !speech.isListening) {
+                      //   // startListening();
+                      // }
                     }
                     print (duration.inSeconds);
                     print(position.inSeconds);
@@ -227,67 +168,6 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-
-
-  void startListening() {
-    lastWords = '';
-    lastError = '';
-    speech.listen(
-        onResult: resultListener,
-        listenFor: Duration(seconds: 5),
-        pauseFor: Duration(seconds: 5),
-        partialResults: false,
-        localeId: _currentLocaleId,
-        onSoundLevelChange: soundLevelListener,
-        cancelOnError: true,
-        listenMode: ListenMode.confirmation);
-    setState(() {});
-  }
-
-  void resultListener(SpeechRecognitionResult result) {
-    ++resultListened;
-    print('Result listener $resultListened');
-    setState(() {
-      lastWords = '${result.recognizedWords} - ${result.finalResult}';
-    });
-    if (lastWords.toLowerCase().contains('да')) {
-      _sampleTree = _sampleTree.positiveAnswer;
-    }
-    if (lastWords.toLowerCase().contains('нет')) {
-      _sampleTree = _sampleTree.negativeAnswer;
-    }
-    if (_sampleTree != null) {
-      speech.stop();
-      _player.setUrl(_sampleTree.url);
-      _player.play();
-    }
-  }
-
-  void soundLevelListener(double level) {
-    minSoundLevel = min(minSoundLevel, level);
-    maxSoundLevel = max(maxSoundLevel, level);
-    // print("sound level $level: $minSoundLevel - $maxSoundLevel ");
-    setState(() {
-      this.level = level;
-    });
-  }
-
-  void errorListener(SpeechRecognitionError error) {
-    // print("Received error status: $error, listening: ${speech.isListening}");
-    setState(() {
-      lastError = '${error.errorMsg} - ${error.permanent}';
-    });
-  }
-
-  void statusListener(String status) {
-    // print(
-    // 'Received listener status: $status, listening: ${speech.isListening}');
-    setState(() {
-      lastStatus = '$status';
-    });
-  }
-
 }
 
 
