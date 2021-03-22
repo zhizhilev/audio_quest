@@ -1,14 +1,14 @@
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flutter/services.dart';
 
 class SpeechRecognizer {
-  List<LocaleName> _localeNames = [];
+  //List<LocaleName> _localeNames = [];
   final SpeechToText speech = SpeechToText();
 
-  bool _hasSpeech = false;
+  // bool _hasSpeech = false;
   double level = 0.0;
   double minSoundLevel = 50000;
   double maxSoundLevel = -50000;
@@ -35,10 +35,26 @@ class SpeechRecognizer {
 
   Future<bool> initSpeechState() async {
     print("qwe initSpeechState");
-    var hasSpeech = await speech.initialize(
-        onError: errorListener, onStatus: statusListener, debugLogging: true);
+    var hasSpeech = false;
+    try{
+      hasSpeech = await speech.initialize(
+          onError: errorListener, onStatus: statusListener, debugLogging: true);
+    }
+    on PlatformException catch(e) {
+      String msg = "Нет распознавалки! Произошла ошибка: " + e.message;
+      print(msg);
+      setErrorMessage(msg);
+      return hasSpeech;
+    }
+    catch(e){
+      String msg ="Произошла ошибка: $e";
+      print(msg);
+      setErrorMessage(msg);
+      return hasSpeech;
+    }
+
     if (hasSpeech) {
-      _localeNames = await speech.locales();
+      //_localeNames = await speech.locales();
 
       var systemLocale = await speech.systemLocale();
       _currentLocaleId = systemLocale.localeId;
@@ -96,8 +112,12 @@ class SpeechRecognizer {
   void errorListener(SpeechRecognitionError error) {
     // print("Received error status: $error, listening: ${speech.isListening}");
     // lastError = '${error.errorMsg} - ${error.permanent}';
+    setErrorMessage('${error.errorMsg} - ${error.permanent}');
+  }
+
+  void setErrorMessage(String msg) {
     if (errorListenerCallback != null) {
-      errorListenerCallback('${error.errorMsg} - ${error.permanent}');
+      errorListenerCallback(msg);
     }
   }
 
