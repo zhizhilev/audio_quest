@@ -1,7 +1,4 @@
-import 'package:audio_quest/domain/model/audio_sample.dart';
 import 'package:flutter/material.dart';
-
-import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -16,18 +13,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   HomeState _homeState;
 
-  AudioPlayer _player = null;
-  AudioSample _sampleTree = null;
-
   void _getAudioSample() async {
     // здесь получаем данные
     await _homeState.getAudioSample(api_key: '');
-    print("hyryureyu");
-    _sampleTree = _homeState.audioSample;
-
-    var duration = _player.setUrl(_sampleTree.url);
-    print("qweqwe " + duration.toString());
-    // initSpeechState();
   }
 
 
@@ -37,7 +25,6 @@ class _HomeState extends State<Home> {
     _homeState = HomeModule.homeState();
     _getAudioSample();
     print("Qweqwe");
-    _player = AudioPlayer();
   }
 
 
@@ -64,15 +51,13 @@ class _HomeState extends State<Home> {
             ElevatedButton(
                 child: Text("Воспроизвести звук"),
                 onPressed: () {
-                  _player.play();
-                  print(_player.positionStream.toString());
+                  _homeState.play();
                 }),
 
             ElevatedButton(
                 child: Text("Остановить звук"),
                 onPressed: () {
-                  _player.stop();
-                  print(_player.positionStream..toString());
+                  _homeState.stop();
                 }),
             ElevatedButton(
                 child: Text("Тест"),
@@ -84,13 +69,13 @@ class _HomeState extends State<Home> {
             _getRecognizerInfo(),
 
             StreamBuilder<Duration>(
-              stream: _player.durationStream,
+              stream: _homeState.getDurationStream(),
               builder: (context, snapshot) {
                 final duration = snapshot.data ?? Duration.zero;
                 return StreamBuilder<PositionData>(
                   stream: Rx.combineLatest2<Duration, Duration, PositionData>(
-                      _player.positionStream,
-                      _player.bufferedPositionStream,
+                      _homeState.getPositionStream(),
+                      _homeState.getBufferedPositionStream(),
                           (position, bufferedPosition) =>
                           PositionData(position, bufferedPosition)),
                   builder: (context, snapshot) {
@@ -107,9 +92,6 @@ class _HomeState extends State<Home> {
                     if (position.inSeconds > duration.inSeconds - 10) {
                       //TODO: начало распознавания
                       print("Начало распознавания текста (нужно запустить)");
-                      // if (_hasSpeech && !speech.isListening) {
-                      //   // startListening();
-                      // }
                     }
                     print (duration.inSeconds);
                     print(position.inSeconds);

@@ -6,7 +6,8 @@ class HomeModule {
   static HomeState homeState() {
     return HomeState(
       RepositoryModule.audioSampleRepository(),
-      ServiceModule.speechRecognizerService()
+      ServiceModule.speechRecognizerService(),
+      ServiceModule.audioPlayerService()
     );
   }
 }
