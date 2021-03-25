@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
 
             _getRecognizerInfo(),
 
-            StreamBuilder<Duration>(
+            StreamBuilder<Duration>( // TODO: это запускается всегда
               stream: _homeState.getDurationStream(),
               builder: (context, snapshot) {
                 final duration = snapshot.data ?? Duration.zero;
@@ -89,9 +89,11 @@ class _HomeState extends State<Home> {
                     if (bufferedPosition > duration) {
                       bufferedPosition = duration;
                     }
-                    if (position.inSeconds > duration.inSeconds - 10) {
+                    if (position.inSeconds > duration.inSeconds - 20) { //TODO: вынести в аудио семпл
                       //TODO: начало распознавания
                       print("Начало распознавания текста (нужно запустить)");
+                      _homeState.stop();
+                      _homeState.startRecognizerListening();
                     }
                     print (duration.inSeconds);
                     print(position.inSeconds);

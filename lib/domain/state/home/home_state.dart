@@ -21,6 +21,7 @@ abstract class HomeStateBase with Store {
 
   @action
   void play()  {
+    print(audioSampleCurrent.url.toString());
     if (audioSampleCurrent.url != null) {
       audioPlayer.setUrl(audioSampleCurrent.url);
       audioPlayer.play();
@@ -38,6 +39,7 @@ abstract class HomeStateBase with Store {
   }
   @action
   void answerNegative()  {
+    print("negative " + audioSampleCurrent.negativeAnswer.toString());
     audioSampleCurrent = audioSampleCurrent.negativeAnswer;
   }
   @action
@@ -85,6 +87,22 @@ abstract class HomeStateBase with Store {
   void resultListenerCalback(String value)  {
     recognizerResult = value;
     print("result " + value);
+
+    if (value.toLowerCase().contains('да')) {
+      print("result positive");
+      answerPositive();
+      play();
+        //_sampleTree = _sampleTree.positiveAnswer;
+    } else if (value.toLowerCase().contains('нет')) {
+      print("result negative");
+      answerNegative();
+      play();
+      // _sampleTree = _sampleTree.negativeAnswer;
+    } else {
+      print("result zatupil");
+      noAnswer();
+      play();
+    }
   }
 
   @action
