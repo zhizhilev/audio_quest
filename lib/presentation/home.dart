@@ -60,11 +60,18 @@ class _HomeState extends State<Home> {
                   _homeState.stop();
                 }),
             ElevatedButton(
-                child: Text("Тест"),
+                child: Text("Тест next"),
+                onPressed: () {
+                  //_getAudioSample();
+                  _homeState.stop();
+                  _homeState.answerNegative();
+                  _homeState.play();
+                }),
+            ElevatedButton(
+                child: Text("Clear"),
                 onPressed: () {
                   _getAudioSample();
                 }),
-
 
             _getRecognizerInfo(),
 
@@ -89,12 +96,19 @@ class _HomeState extends State<Home> {
                     if (bufferedPosition > duration) {
                       bufferedPosition = duration;
                     }
-                    if (position.inSeconds > duration.inSeconds - 20) { //TODO: вынести в аудио семпл
-                      //TODO: начало распознавания
-                      print("Начало распознавания текста (нужно запустить)");
-                      _homeState.stop();
-                      _homeState.startRecognizerListening();
+                    print ("==" + _homeState.isRecognizerListening.toString());
+                    if (!_homeState.isRecognizerListening) {
+                      if (position.inSeconds > 0 && duration.inSeconds > 0 && position.inSeconds > duration.inSeconds - 20 ) { //TODO: магическое число вынести в аудио семпл
+                        //TODO: начало распознавания
+                        print("Начало распознавания текста (нужно запустить)");
+                        print(position.inSeconds);
+                        print(duration.inSeconds);
+                        print("--------");
+                        _homeState.stop();
+                        _homeState.startRecognizerListening();
+                      }
                     }
+
                     print (duration.inSeconds);
                     print(position.inSeconds);
                     return Text(position.toString());

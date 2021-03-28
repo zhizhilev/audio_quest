@@ -103,18 +103,21 @@ abstract class HomeStateBase with Store {
       noAnswer();
       play();
     }
+    isRecognizerListening = false;
   }
 
   @action
   void errorListenerCallback(String value)  {
     recognizerError = value;
     print("error " + value);
+    isRecognizerListening = false;
   }
 
   @action
   void statusListenerCallback(String value)  {
     recognizerStatus = value;
     print("status " + value);
+    isRecognizerListening = false;
   }
 
 
