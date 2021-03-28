@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
     super.initState();
     _homeState = HomeModule.homeState();
     _getAudioSample();
+    _homeState.initRecognizer();
     print("Qweqwe");
   }
 
@@ -75,7 +76,7 @@ class _HomeState extends State<Home> {
 
             _getRecognizerInfo(),
 
-            StreamBuilder<Duration>( // TODO: это запускается всегда
+            StreamBuilder<Duration>( // это запускается всегда
               stream: _homeState.getDurationStream(),
               builder: (context, snapshot) {
                 final duration = snapshot.data ?? Duration.zero;
@@ -97,8 +98,13 @@ class _HomeState extends State<Home> {
                       bufferedPosition = duration;
                     }
                     print ("==" + _homeState.isRecognizerListening.toString());
+                    print ("+=" + _homeState?.audioSampleCurrent?.secToEnd.toString());
                     if (!_homeState.isRecognizerListening) {
-                      if (position.inSeconds > 0 && duration.inSeconds > 0 && position.inSeconds > duration.inSeconds - 20 ) { //TODO: магическое число вынести в аудио семпл
+                      if (
+                          position.inSeconds > 0
+                          && duration.inSeconds > 0
+                          && position.inSeconds >= duration.inSeconds - _homeState.audioSampleCurrent.secToEnd
+                      ) {
                         //TODO: начало распознавания
                         print("Начало распознавания текста (нужно запустить)");
                         print(position.inSeconds);

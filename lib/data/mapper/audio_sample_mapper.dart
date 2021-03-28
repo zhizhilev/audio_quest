@@ -14,7 +14,7 @@ class AudioSampleMapper {
     // );
   print("qweqwe oooo");
     //TODO: заглушка
-    return AudioSample(
+    return AudioSample.withSec(
         "https://audio.cursor72.ru/media/test/one.mp3",
         AudioSample(
           "https://audio.cursor72.ru/media/test/one_yes.mp3",
@@ -48,7 +48,8 @@ class AudioSampleMapper {
             null,
             null,
             null
-        )
+        ),
+      20
     );
 
 
