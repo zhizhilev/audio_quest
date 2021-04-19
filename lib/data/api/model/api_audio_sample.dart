@@ -1,6 +1,7 @@
 
 class ApiAudioSample {
   String url;
+  bool main;
   ApiAudioSample positiveAnswer;
   ApiAudioSample negativeAnswer;
   ApiAudioSample noAnswer;
@@ -9,6 +10,7 @@ class ApiAudioSample {
   ApiAudioSample(Map<String, dynamic> map):
 
     url = map['url'],
+    main = map['main'],
     positiveAnswer = ApiAudioSample.fromApi(map['positiveAnswer']),
     negativeAnswer = ApiAudioSample.fromApi(map['negativeAnswer']),
     noAnswer = ApiAudioSample.fromApi(map['noAnswer']),
