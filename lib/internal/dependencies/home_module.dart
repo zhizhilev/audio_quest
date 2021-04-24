@@ -5,7 +5,7 @@ import 'package:audio_quest/internal/dependencies/service_module.dart';
 class HomeModule {
   static HomeState homeState() {
     return HomeState(
-      RepositoryModule.audioSampleRepository(),
+      RepositoryModule.audioQuestRepository(),
       ServiceModule.speechRecognizerService(),
       ServiceModule.audioPlayerService()
     );

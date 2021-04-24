@@ -1,7 +1,8 @@
+import 'package:audio_quest/domain/model/audio_sample.dart';
 import 'package:mobx/mobx.dart';
 import 'package:meta/meta.dart';
-import 'package:audio_quest/domain/repository/audio_sample_repository.dart';
-import 'package:audio_quest/domain/model/audio_sample.dart';
+import 'package:audio_quest/domain/repository/audio_quest_repository.dart';
+import 'package:audio_quest/domain/model/audio_quest.dart';
 import 'package:audio_quest/domain/service/speech_recognizer.dart';
 import 'package:audio_quest/domain/service/audio_player.dart';
 
@@ -11,7 +12,7 @@ class HomeState = HomeStateBase with _$HomeState;
 
 abstract class HomeStateBase with Store {
   HomeStateBase(
-      this.audioSampleRepository,
+      this.audioQuestRepository,
       this.speechRecognizer,
       this.audioPlayer
   );
@@ -35,16 +36,18 @@ abstract class HomeStateBase with Store {
 
   @action
   void answerPositive()  {
-    audioSampleCurrent = audioSampleCurrent.positiveAnswer;
+    print("answerPositive " );
+    //audioSampleCurrent = audioSampleCurrent.positiveAnswer;
   }
   @action
   void answerNegative()  {
-    print("negative " + audioSampleCurrent.negativeAnswer.toString());
-    audioSampleCurrent = audioSampleCurrent.negativeAnswer;
+    print("negative ");
+    //audioSampleCurrent = audioSampleCurrent.negativeAnswer;
   }
   @action
   void noAnswer()  {
-    audioSampleCurrent = audioSampleCurrent.noAnswer;
+    print("noAnswer ");
+    //audioSampleCurrent = audioSampleCurrent.noAnswer;
   }
 
   @action
@@ -146,25 +149,34 @@ abstract class HomeStateBase with Store {
 
 /* get data audio samples tree */
   @observable
-  AudioSampleRepository audioSampleRepository;
+  AudioQuestRepository audioQuestRepository;
 
   @observable
-  AudioSample audioSample;
+  AudioQuest audioQuest;
 
   @observable
-  AudioSample audioSampleCurrent;
+  AudioSample audioSampleCurrent;//TODO: string
 
   @observable
   bool isLoading = false;
 
+  AudioSample getFirstAudioSample() {
+    for (var key in audioQuest.audioSampleList.keys) {
+      if (audioQuest.audioSampleList[key].main) {
+        //
+      }
+
+    }
+  }
+
   @action
-  Future<void> getAudioSample({
+  Future<void> getAudioQuest({
     @required String api_key
   }) async {
     isLoading = true;
-    final data = await audioSampleRepository.getAudioSampleTree(api_key: '');
-    audioSample = data;
-    audioSampleCurrent = data;
+    final data = await audioQuestRepository.getAudioQuest(api_key: '');
+    audioQuest = data;
+    audioSampleCurrent = data; //
     isLoading = false;
   }
   /* /get data audio samples tree  */

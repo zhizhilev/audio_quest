@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
-class GetAudioSampleBody {
+class GetAudioQuestBody {
   final String api_key;
 
-  GetAudioSampleBody({
+  GetAudioQuestBody({
     @required this.api_key,
   });
 

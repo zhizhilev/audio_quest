@@ -10,7 +10,7 @@ class AudioSampleService {
     BaseOptions(baseUrl: _BASE_URL),
   );
   
-  Future<ApiQuest> getAudioSample(GetAudioSampleBody body) async {
+  Future<ApiQuest> getAudioQuest(GetAudioQuestBody body) async {
     final response = await _dio.get(
       '/media/test/quest.json',
       queryParameters: body.toApi(),
