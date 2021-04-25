@@ -37,17 +37,17 @@ abstract class HomeStateBase with Store {
   @action
   void answerPositive()  {
     print("answerPositive " );
-    //audioSampleCurrent = audioSampleCurrent.positiveAnswer;
+    audioSampleCurrent = audioQuest.audioSampleList[audioSampleCurrent.positiveAnswer];
   }
   @action
   void answerNegative()  {
     print("negative ");
-    //audioSampleCurrent = audioSampleCurrent.negativeAnswer;
+    audioSampleCurrent = audioQuest.audioSampleList[audioSampleCurrent.negativeAnswer];
   }
   @action
   void noAnswer()  {
     print("noAnswer ");
-    //audioSampleCurrent = audioSampleCurrent.noAnswer;
+    audioSampleCurrent = audioQuest.audioSampleList[audioSampleCurrent.noAnswer];
   }
 
   @action
@@ -163,10 +163,10 @@ abstract class HomeStateBase with Store {
   AudioSample getFirstAudioSample() {
     for (var key in audioQuest.audioSampleList.keys) {
       if (audioQuest.audioSampleList[key].main) {
-        //
+        return audioQuest.audioSampleList[key];
       }
-
     }
+    return null;
   }
 
   @action
@@ -176,7 +176,7 @@ abstract class HomeStateBase with Store {
     isLoading = true;
     final data = await audioQuestRepository.getAudioQuest(api_key: '');
     audioQuest = data;
-    audioSampleCurrent = data; //
+    audioSampleCurrent = getFirstAudioSample(); //
     isLoading = false;
   }
   /* /get data audio samples tree  */

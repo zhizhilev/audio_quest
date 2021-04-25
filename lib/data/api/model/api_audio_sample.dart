@@ -20,7 +20,7 @@ class ApiAudioSample {
     secToEnd = map['secToEnd'] ?? 0;
 
   AudioSample toAudioSample() {
-    return new AudioSample.withSecName(uid: uid, url:url, positiveAnswer:positiveAnswer, negativeAnswer:negativeAnswer, noAnswer:noAnswer, secToEnd: secToEnd);
+    return new AudioSample.withSecName(uid: uid, url:url, positiveAnswer:positiveAnswer, negativeAnswer:negativeAnswer, noAnswer:noAnswer, secToEnd: secToEnd, main: main);
   }
 
   factory ApiAudioSample.fromApi(Map<String, dynamic> map) {
