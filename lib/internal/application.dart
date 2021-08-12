@@ -1,3 +1,4 @@
+import 'package:audio_quest/presentation/main.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_quest/presentation/home.dart';
 import 'package:audio_quest/presentation/login.dart';
@@ -22,7 +23,13 @@ class _AppBodyState extends State<AppBody> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Login()
+      // home: Login()
+      initialRoute: '/',
+      routes: {
+        '/': (context) => Main(),
+        '/login': (context) => Login(),
+        '/home': (context) => Home(),
+      },
     );
   }
 
