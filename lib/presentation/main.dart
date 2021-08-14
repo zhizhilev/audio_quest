@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 
-class Main extends StatefulWidget {
-  @override
-  _MainState createState() => _MainState();
-}
 
-class _MainState extends State<Main> {
-
-  @override
-  void initState() {
-    super.initState();
-    print("init Main");
-  }
-
-
+class Main extends StatelessWidget {
+  const Main({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +13,8 @@ class _MainState extends State<Main> {
       body: Center(
         child: Column(
           children: [
-            Placeholder(),
+            //Placeholder(),
+            Image.asset("assets/images/main_background.jpeg", fit:BoxFit.fitWidth),
             ElevatedButton(
                 child: Text("Войти"),
                 onPressed: () {
@@ -35,17 +25,10 @@ class _MainState extends State<Main> {
                 onPressed: () {
                   Navigator.pushNamed(context, '/registration');
                 }),
-
-
           ],
         ),
       ),
     );
   }
-
-
-
-
 }
-
 

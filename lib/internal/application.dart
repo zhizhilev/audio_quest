@@ -1,4 +1,5 @@
 import 'package:audio_quest/presentation/main.dart';
+import 'package:audio_quest/presentation/quest_list.dart';
 import 'package:flutter/material.dart';
 import 'package:audio_quest/presentation/home.dart';
 import 'package:audio_quest/presentation/login.dart';
@@ -26,9 +27,10 @@ class _AppBodyState extends State<AppBody> {
       // home: Login()
       initialRoute: '/',
       routes: {
-        '/': (context) => Main(),
+        '/': (context) => QuestList(),//Main(),
         '/login': (context) => Login(),
         '/home': (context) => Home(),
+        '/quests': (context) => QuestList(),
       },
     );
   }
